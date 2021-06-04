@@ -11,8 +11,8 @@ class Listing(models.Model):
     category = models.CharField(max_length=64)
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=64)
-    starting_bid = models.IntegerField()
-    list = models.DateTimeField(auto_now_add=True)
+    price = models.IntegerField()
+    date_listed = models.DateTimeField(auto_now_add=True)
 
 
 class Bid(models.Model):

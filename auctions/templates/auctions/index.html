@@ -3,5 +3,14 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
+    <ul> 
+        {% for Listing in Listings %}
+        <li>Listing {{ Listing.title }}: {{ Listing.price }}</li>
+
+        {% endfor %}
+
+    </ul>
+
+    Look into how to display these listings 
+    <br>hyperlink each one to own listing page
 {% endblock %}
