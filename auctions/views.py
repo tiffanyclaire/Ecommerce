@@ -7,6 +7,7 @@ from django.urls import reverse
 from .models import User
 from .models import Listing
 
+from .forms import *
 
 def index(request):
     return render(request, "auctions/index.html", {
@@ -67,4 +68,19 @@ def register(request):
 
 
 def create_listing(request):
+    form = listing_form(request.POST)
+    if form.is_valid(): 
+        new_listing =  form.save
+        new_listing.seller = request.user
+        new_listing.save()
+        return HttpResponseRedirect(reverse("index"))
+
+    else:
+        form = listing_form()
+        return render(request, "auctions/create_listing.html", {
+            "form": form
+        })
+
+
+
     return render(request, "auctions/create_listing.html")
