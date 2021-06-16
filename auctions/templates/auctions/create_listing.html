@@ -27,12 +27,12 @@
     </form>
 ---->
 
-    <form class="site-form" method="POST"> 
+    <form class="site-form" method="POST" enctype="multipart/form-data"> 
         {% csrf_token %}
     <div class="form-group">
         <table> {{ form.as_table }} </table>
         
-
+        <input class="btn btn-primary" type="submit" value="Save">
     </div>
 
 

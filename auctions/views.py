@@ -68,9 +68,9 @@ def register(request):
 
 
 def create_listing(request):
-    form = listing_form(request.POST)
+    form = listing_form(request.POST, request.FILES)
     if form.is_valid(): 
-        new_listing =  form.save
+        new_listing =  form.save(commit=False)
         new_listing.seller = request.user
         new_listing.save()
         return HttpResponseRedirect(reverse("index"))
