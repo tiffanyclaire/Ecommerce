@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    
+<div class="container"> 
+
+    <h3>{{ listing.title }}</h3>
+
+    <h5>Product Details</h5>
+
+   <p>Listed by {{ listing.seller }}</p> 
+
+    <p>{{ listing.description }}</p>
+
+    <h4>£ {{ Listing.price }}</h4>
+
+
+    
+    {% if listing.image %}
+
+    <img src="{{ listing.image }}" class="rounded float-left" >
+    
+
+    {% endif %}
+
+
+
+
+{% endblock %}

@@ -3,30 +3,6 @@
 {% block body %}
     <h2>Create a Listing</h2>
 
-<!----
-    <form action="{% url 'create_listing' %}" method="POST">
-        {% csrf_token %} 
-        <input type="text" name="title" placeholder="Title">
-        <textarea name="description" placeholder="description">Enter your description here</textarea>
-
-        <select name="category" placeholder="Category">
-            <option value="clothing">clothing</option>
-            <option value="technology">technology</option>
-            <option value="toys">toys</option>
-            <option value="accessories">accessories</option>
-            <option value="books">books</option>
-        </select>
-
-        <input type="number" name="price" placeholder="price">    
-
-        <input type="submit" >
-
-
-
-        
-    </form>
----->
-
     <form class="site-form" method="POST" enctype="multipart/form-data"> 
         {% csrf_token %}
     <div class="form-group">

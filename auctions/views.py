@@ -70,9 +70,9 @@ def register(request):
 def create_listing(request):
     form = listing_form(request.POST, request.FILES)
     if form.is_valid(): 
-        new_listing =  form.save(commit=False)
-        new_listing.seller = request.user
-        new_listing.save()
+        listing =  form.save(commit=False)
+        listing.seller = request.user
+        listing.save()
         return HttpResponseRedirect(reverse("index"))
 
     else:
@@ -83,4 +83,8 @@ def create_listing(request):
 
 
 
-    return render(request, "auctions/create_listing.html")
+def listing(request, listing_id):
+    listing = Listing.objects.get(id=listing_id)
+    return render(request, "auctions/listing.html", {
+        "listing": listing 
+   })
