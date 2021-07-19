@@ -15,7 +15,6 @@ class Categories(models.Model):
     
 
 
-
 class Listing(models.Model):
     seller  = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing")
     category = models.ForeignKey(Categories, null=True, on_delete=models.SET_NULL)
@@ -36,7 +35,7 @@ class Bid(models.Model):
 
 
 class Watchlist(models.Model):
-    User = models.CharField
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist", default= None)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="watchlist", default= None)
 
 class Comments(models.Model):

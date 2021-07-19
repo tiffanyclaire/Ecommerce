@@ -4,8 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
-from .models import Listing
+from auctions.models import User, Listing, Watchlist, Categories
 
 from .forms import *
 
@@ -70,7 +69,7 @@ def register(request):
 def create_listing(request):
     form = listing_form(request.POST, request.FILES)
     if form.is_valid(): 
-        listing =  form.save(commit=False)
+        listing = form.save(commit=False)
         listing.seller = request.user
         listing.save()
         return HttpResponseRedirect(reverse("index"))
@@ -88,3 +87,35 @@ def listing(request, listing_id):
     return render(request, "auctions/listing.html", {
         "listing": listing 
    })
+
+
+
+def watchlist_add(request, listing_id):
+    user = request.user
+    listing = Listing.objects.get(id=listing_id)
+    watchlist = Watchlist(listing=listing, user=user)
+    watchlist.save()
+    return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+
+
+        
+
+def watchlist(request):
+    watchlist = Watchlist.objects.filter(user=request.user)
+    return render(request, "auctions/watchlist.html", {
+        "listings" : watchlist
+    })
+
+
+
+def categories(request):
+    listings = None
+    category = None
+    if request.method == "POST":
+        category = request.POST["categories"]
+        listings = Listing.objects.filter(category = category)
+    return render(request, "auctions/categories.html", {
+        "categories" : Categories.objects.all(),
+        "category" : Categories.objects.get(id = category) if category is not None else "",
+        "listings" : listings
+        })

@@ -1,0 +1,61 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    
+
+
+
+
+
+     <h3>Categories</h3>
+
+     <form action="{% url 'categories' %}" method="POST">
+       {% csrf_token %}
+       <select name="categories">
+
+        <option selected>Select Category</option>
+           {% for category in categories %}
+
+           
+            
+           <option value="{{ category.id }}">{{ category }}</option>
+
+        {% endfor %}
+       </select>
+       <input type="submit" class="btn btn-primary">
+    
+    </form>
+
+    <h2>{{ category }}</h2>
+
+        {% for listing in listings %}
+        <div class="container mt-5 mb-5">
+
+            
+            <div class="d-flex justify-content-center row">
+                <div class="col-md-10">
+                    
+                   
+        <div class="row p-2 bg-white border rounded">
+            <div class="col-md-3 mt-1"><img class="img-fluid img-responsive rounded product-image" src="{{ listing.image }}"></div>
+            <div class="col-md-6 mt-1">
+                <h5>{{ listing.title }}</h5>
+                <p class="text-justify text-truncate para mb-0">{{ listing.description }}</p>
+            </div>
+            <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                <div class="d-flex flex-row align-items-center">
+                    <h4 class="mr-1"> £ {{ listing.price }}</h4>
+                </div>
+                <h6 class="text-success">Free shipping</h6>
+                <a href= class="btn btn-primary">View</a>
+        </div>
+                </div>
+            </div>
+        </div>  
+        </div>  
+
+        </div>
+
+        {% endfor %}
+
+{% endblock %}
