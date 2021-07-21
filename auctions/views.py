@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from auctions.models import User, Listing, Watchlist, Categories
+from auctions.models import User, Listing, Watchlist, Categories, Bid
 
 from .forms import *
 
@@ -84,8 +84,10 @@ def create_listing(request):
 
 def listing(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
+    form = bid_form()
     return render(request, "auctions/listing.html", {
-        "listing": listing 
+        "listing": listing, 
+        "form" : form
    })
 
 
@@ -119,3 +121,14 @@ def categories(request):
         "category" : Categories.objects.get(id = category) if category is not None else "",
         "listings" : listings
         })
+
+def bid(request, listing_id):
+    if request.method == "POST":
+        listing = Listing.objects.get(id=listing_id)
+        newbid = (request.POST.get('bid'))
+
+
+        
+      #  if listing.price >= newbid:#
+          #  listing = Listing.objects.get(id=listing_id)#
+          #  return render (request, "auctions/listing.html")#

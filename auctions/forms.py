@@ -15,8 +15,7 @@ class bid_form(forms.ModelForm):
     class Meta: 
         model = Bid 
         fields = ['bid']
-
-
+        
 
 class comment_form(forms.ModelForm):
 

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models.fields import CharField, NullBooleanField
+from django.core.validators import MinValueValidator
 
 
 class User(AbstractUser):
@@ -21,7 +22,7 @@ class Listing(models.Model):
     title = models.CharField(max_length=64, default= None)
     description = models.CharField(max_length=64)
     image = models.URLField(blank=True, null=True)
-    price = models.FloatField()
+    price = models.DecimalField(max_digits=7, decimal_places=2, validators=[MinValueValidator(0.01)])
     date_listed = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -29,9 +30,8 @@ class Listing(models.Model):
 
 class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bid")
-    title = models.CharField(max_length=64)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bid", default= None)
-    bid = models.IntegerField(default= None) 
+    bid = models.DecimalField(max_digits= 7, decimal_places= 2, default= None) 
 
 
 class Watchlist(models.Model):
