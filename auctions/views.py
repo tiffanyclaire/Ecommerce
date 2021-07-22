@@ -1,7 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from auctions.models import User, Listing, Watchlist, Categories, Bid
@@ -65,7 +66,7 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
-
+@login_required
 def create_listing(request):
     form = listing_form(request.POST, request.FILES)
     if form.is_valid(): 
@@ -91,7 +92,7 @@ def listing(request, listing_id):
    })
 
 
-
+@login_required
 def watchlist_add(request, listing_id):
     user = request.user
     listing = Listing.objects.get(id=listing_id)
@@ -101,7 +102,7 @@ def watchlist_add(request, listing_id):
 
 
         
-
+@login_required
 def watchlist(request):
     watchlist = Watchlist.objects.filter(user=request.user)
     return render(request, "auctions/watchlist.html", {
@@ -109,7 +110,7 @@ def watchlist(request):
     })
 
 
-
+@login_required
 def categories(request):
     listings = None
     category = None
@@ -122,10 +123,31 @@ def categories(request):
         "listings" : listings
         })
 
+@login_required
 def bid(request, listing_id):
-    if request.method == "POST":
+    listing = Listing.objects.get(id=listing_id)
+    starting_bid = listing.price
+    new_bid = float(request.POST['bid'])
+
+    if new_bid >= starting_bid:
+        bid = Bid(user=request.user, bid=new_bid, listing=listing)
+        bid.save()
+        #update intitial listing price#
+        Listing.objects.filter(id=listing_id).update(price=new_bid)
+        return redirect("listing", id=listing_id)
+
+    else:
         listing = Listing.objects.get(id=listing_id)
-        newbid = (request.POST.get('bid'))
+        form = bid_form()
+        return render(request, "auctions/listing.html", {
+        "listing": listing, 
+        "form" : form,
+        "message" : {'error':'Your bid must be higher than the current price'}
+   })
+
+
+
+
 
 
         
