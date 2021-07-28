@@ -17,6 +17,7 @@ class Categories(models.Model):
 
 
 class Listing(models.Model):
+    active = models.BooleanField(default=True)
     seller  = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing")
     category = models.ForeignKey(Categories, null=True, on_delete=models.SET_NULL)
     title = models.CharField(max_length=64, default= None)

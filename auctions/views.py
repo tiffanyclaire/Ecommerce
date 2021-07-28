@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -11,7 +11,7 @@ from .forms import *
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "Listings" : Listing.objects.all()
+        "Listings" : Listing.objects.filter(active=True)
     })
 
 
@@ -94,11 +94,17 @@ def listing(request, listing_id):
 
 @login_required
 def watchlist_add(request, listing_id):
-    user = request.user
-    listing = Listing.objects.get(id=listing_id)
-    watchlist = Watchlist(listing=listing, user=user)
-    watchlist.save()
-    return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+    if request.method == "POST":
+        user = request.user
+        listing = Listing.objects.get(id=listing_id)
+        
+        if Watchlist.objects.filter(listing=listing, user=user).exists():
+            Watchlist.objects.filter(listing=listing).delete()
+            return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+        else:
+            watchlist = Watchlist(listing=listing, user=user)
+            watchlist.save()
+            return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
 
 
         
@@ -126,15 +132,20 @@ def categories(request):
 @login_required
 def bid(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
+    user = request.user
     starting_bid = listing.price
     new_bid = float(request.POST['bid'])
+    form = bid_form(request.POST)
 
     if new_bid >= starting_bid:
-        bid = Bid(user=request.user, bid=new_bid, listing=listing)
+        bid = form.save(commit=False)
+        bid.user = user
+        bid.listing  = listing
+        bid.bid = new_bid
         bid.save()
         #update intitial listing price#
         Listing.objects.filter(id=listing_id).update(price=new_bid)
-        return redirect("listing", id=listing_id)
+        return redirect("listing", listing_id)
 
     else:
         listing = Listing.objects.get(id=listing_id)
@@ -145,12 +156,17 @@ def bid(request, listing_id):
         "message" : {'error':'Your bid must be higher than the current price'}
    })
 
+def close_auction(request, listing_id):
+       listing = Listing.objects.get(id=listing_id)
+       if request.method == "POST":
+           listing.active = False
+           listing.save()
+           return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+
+           
+
+     
+
+   
 
 
-
-
-
-        
-      #  if listing.price >= newbid:#
-          #  listing = Listing.objects.get(id=listing_id)#
-          #  return render (request, "auctions/listing.html")#
