@@ -21,7 +21,7 @@ class Listing(models.Model):
     seller  = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing")
     category = models.ForeignKey(Categories, null=True, on_delete=models.SET_NULL)
     title = models.CharField(max_length=64, default= None)
-    description = models.CharField(max_length=64)
+    description = models.CharField(max_length=255)
     image = models.URLField(blank=True, null=True)
     price = models.DecimalField(max_digits=7, decimal_places=2, validators=[MinValueValidator(0.01)])
     date_listed = models.DateTimeField(auto_now_add=True)
@@ -32,17 +32,30 @@ class Listing(models.Model):
 class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bid")
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bid", default= None)
-    bid = models.DecimalField(max_digits= 7, decimal_places= 2, default= None) 
+    bid = models.DecimalField(max_digits= 7, decimal_places= 2, default= None)
+
+    def __str__(self):
+        return f"{self.listing} : {self.user} : {self.bid}"
 
 
 class Watchlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist", default= None)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="watchlist", default= None)
 
+    def __str__(self):
+        return f"{self.user}'s watchlist"
+
+
+
 class Comments(models.Model):
     user =  models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
-    comment = models.CharField(max_length=100)
+    comment = models.TextField(max_length=255)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comments", default= None)
+
+    def __str__(self):
+        return f"{self.user} commented {self.comment} on {self.listing}"
+
+
 
 
 

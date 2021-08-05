@@ -1,11 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from auctions.models import User, Listing, Watchlist, Categories, Bid
+from auctions.models import User, Listing, Watchlist, Categories, Bid, Comments
 
 from .forms import *
 
@@ -86,9 +87,11 @@ def create_listing(request):
 def listing(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
     form = bid_form()
+    add_comment = comment_form()
     return render(request, "auctions/listing.html", {
-        "listing": listing, 
-        "form" : form
+        "listing" : listing, 
+        "form" : form,
+        "add_comment" : add_comment
    })
 
 
@@ -143,17 +146,18 @@ def bid(request, listing_id):
         bid.listing  = listing
         bid.bid = new_bid
         bid.save()
-        #update intitial listing price#
         Listing.objects.filter(id=listing_id).update(price=new_bid)
+        messages.success(request, "Your bid has been successful!", extra_tags='successful_bid')
         return redirect("listing", listing_id)
 
     else:
         listing = Listing.objects.get(id=listing_id)
         form = bid_form()
+        messages.error(request, "Your bid is too low", extra_tags='bid_error')
         return render(request, "auctions/listing.html", {
         "listing": listing, 
         "form" : form,
-        "message" : {'error':'Your bid must be higher than the current price'}
+        
    })
 
 def close_auction(request, listing_id):
@@ -162,6 +166,18 @@ def close_auction(request, listing_id):
            listing.active = False
            listing.save()
            return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+
+
+
+def comment(request, listing_id):
+    if request.method == "POST":
+        form = comment_form(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.listing = Listing.objects.get(id=listing_id)
+            comment.user = request.user
+            comment.save()
+            return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
 
            
 
