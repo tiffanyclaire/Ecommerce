@@ -88,10 +88,12 @@ def listing(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
     form = bid_form()
     add_comment = comment_form()
+    comments = Comments.objects.filter(id=listing_id)
     return render(request, "auctions/listing.html", {
         "listing" : listing, 
         "form" : form,
-        "add_comment" : add_comment
+        "add_comment" : add_comment,
+        "comments" : comments
    })
 
 

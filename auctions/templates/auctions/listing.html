@@ -18,19 +18,42 @@
             </div>
      
             <div class="col-md-6">
+                <div class="row justify-content-between mx-0">
+                
 
-                <h4>{{ listing.title }}</h4>
+                 <h4>{{ listing.title }}</h4>
+
+                 {% if listing.seller == user and listing.active %}
+
+                 <form method="POST" action="{% url 'close_auction' listing.id %}" class="form-inline mx-3">
+                     {% csrf_token %}
+                     <input class="btn btn-danger" type="submit" value="close auction"/>
+ 
+                 </form>
+ 
+                 {% endif %}
+ 
 
                 
 
-                <p class="mb-2 text-muted text-uppercase medium">{{ listing.category }}</p> 
+                </div>
+
+                
+
+                <p class="mb-2 text-muted text-uppercase medium">{{ listing.category }}</p>
+                
+                
+
+                    <h5>Current Price:</h5>
+                    <h4>£ {{ listing.price }}</h4>
+
+
+               
 
             
-                <p class="pt-1" >{{ listing.description }}</p>
-
-                <p class="pt-1" >Current Price:</p>
-                <h4>£ {{ listing.price }}</h4>
-
+                
+  <!--Error Messages-->
+                
 
                 {% if messages %}
 
@@ -41,43 +64,38 @@
                   {% endfor %}
 
                 {% endif %}
-            
+
+
+
+<!--bid and watch-->           
             
                 <form method="POST" action="{% url 'bid' listing.id %}" class="form-inline">
                     {% csrf_token %}
 
                     
-                <div class="form-group mx-sm-3 mb-2">
+                <div class="form-group sm-3 mb-2 mt-3">
                     {{ form }} 
-                </div>   
+            
+                  <input class="btn btn-primary mx-3" type="submit" value="Place Bid"/>
+                </div> 
                 
-                <input class="btn btn-primary mb-2" type="submit" value="Place Bid" />     
                 </form>
 
-
-
-                <form method="POST" action="{% url 'watchlist_add' listing.id %}" class="form-inline">
+                <form method="POST" action="{% url 'watchlist_add' listing.id %}" class="pull-right">
                     {% csrf_token %}
                     <input class="btn btn-danger" type="submit" value="Watch"/>
 
                 </form>
-
                 
 
-                <p class="mb-2 text-muted text-sentencecas small">Listed by: {{ listing.seller }}</p> 
-                <p class="mb-2 text-muted text-sentencecase small">Listed: {{ listing.date_listed }}</p> 
 
 
-                {% if listing.seller == user and listing.active %}
+              
+               
 
-                <form method="POST" action="{% url 'close_auction' listing.id %}" class="form-inline">
-                    {% csrf_token %}
-                    <input class="btn btn-danger" type="submit" value="close auction"/>
 
-                </form>
 
-                {% endif %}
-
+               
                
                
 
@@ -87,26 +105,103 @@
         </div>
     </section>
 
+
+  
+
+    <section class ="mb-5">
+        <div class="row">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="col-12 mb-0">
+                    <h5>Product Details</h5>
+                    <p class="pt-1" >{{ listing.description }}</p>
+
+                </div>
+                
+            </div>
+
+            <div class="col-md-6">
+                
+                <p class="mb-2 text-muted text-sentencecas small">Listed by: {{ listing.seller }}</p> 
+                <p class="mb-2 text-muted text-sentencecase small">Listed: {{ listing.date_listed }}</p> 
+                
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+    </section>
+
+
+
+<!--comments section-->
+
+
+
+<section class ="mb-5">
+
+    <div class="row">
+
+        {% if comments %}
+          {% for comment in comments %}
+
+        <div class="container mt-5 mb-5">
+            <div class="d-flex justify-content-center row">
+                <div class="col-md-10">
+                    <div class="card text-left">
+                        <h5 class="card-header h5">{{ comment.user }}</h5>
+                        <div class="card-body>">
+                            <p class="lead px-3 mb-3 mt-3 ">{{ comment.comment }}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+          {% endfor %}
+
+        {% endif %}
+
+
+        
+        
+
+    </div>
+
+
+
+
+    
+</section>
+
+
+
+  <!--add comments section-->
+
         <section class ="mb-5">
 
-            <div class="row">
+            <div class="row d-flex justify-content-center">
                 
-                <div class="col-md-12">
+                <div class="col-md-10">
         
                     <form method="POST" action="{% url 'comment' listing.id %}">
 
-                        <div class="form-group">
+                        
 
                             {% csrf_token %}
 
-                            <div class="col-md-12">
+                            <div class="form-group">
 
                                {{ add_comment }}
 
                             </div>
-
-                        </div>
-
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                         
@@ -118,25 +213,18 @@
     
                     </form>
 
-                    
-
-
-
-                      <div class="comment">
-                        {% for comment in comments %}
-
-                        {% endfor %}
-
-                      </div>
+                      
                 </div>
 
             </div>
-
-
-
-
             
         </section>
+
+
+
+
+
+
 
 
     

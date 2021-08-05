@@ -9,9 +9,11 @@
 
      <h3>Categories</h3>
 
-     <form action="{% url 'categories' %}" method="POST">
+     <form action="{% url 'categories' %}" method="POST" class="form-inline">
        {% csrf_token %}
-       <select name="categories">
+
+       
+       <select class="form-control col-2" name="categories">
 
         <option selected>Select Category</option>
            {% for category in categories %}
@@ -22,7 +24,9 @@
 
         {% endfor %}
        </select>
-       <input type="submit" class="btn btn-primary">
+    
+       <input type="submit" class="btn btn-primary mx-3">
+    
     
     </form>
 
@@ -47,7 +51,7 @@
                     <h4 class="mr-1"> £ {{ listing.price }}</h4>
                 </div>
                 <h6 class="text-success">Free shipping</h6>
-                <a href= class="btn btn-primary">View</a>
+                <a href="{% url 'listing' listing.id %}" class="btn btn-primary">View</a>
         </div>
                 </div>
             </div>
