@@ -28,6 +28,7 @@ class Listing(models.Model):
 
     def __str__(self):
         return f"{self.title} created by {self.seller}"
+        
 
 class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bid")

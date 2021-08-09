@@ -5,6 +5,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
 
 from auctions.models import User, Listing, Watchlist, Categories, Bid, Comments
 
@@ -86,15 +87,24 @@ def create_listing(request):
 
 def listing(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
-    form = bid_form()
-    add_comment = comment_form()
-    comments = Comments.objects.filter(id=listing_id)
-    return render(request, "auctions/listing.html", {
-        "listing" : listing, 
-        "form" : form,
-        "add_comment" : add_comment,
-        "comments" : comments
-   })
+    if listing.active == True:
+        form = bid_form()
+        add_comment = comment_form()
+        comments = Comments.objects.filter(listing=listing_id)
+        return render(request, "auctions/listing.html", {
+            "listing" : listing,
+            "form" : form,
+            "add_comment" : add_comment,
+            "comments" : comments
+            })
+    else:
+        try:
+            winner = Bid.objects.filter(listing=listing).last().user
+        except: winner = None
+        return render(request, "auctions/listing.html", {
+            "listing" : listing, 
+            "winner" : winner
+            })
 
 
 @login_required

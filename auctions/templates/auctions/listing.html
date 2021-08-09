@@ -86,18 +86,39 @@
                     <input class="btn btn-danger" type="submit" value="Watch"/>
 
                 </form>
-                
 
 
-
-              
-               
+<!--Winning Bid section-->
 
 
+{% if listing.active == False %}
 
-               
-               
-               
+ {% if winner is None %}
+ {% if listing.seller  == user %}
+    <p>There were no Bids on your listing</p>
+  {% else %}
+    <p>This Auction has ended </p>
+  {% endif %}
+
+  
+{% elif winner is not None %}
+
+  {% if listing.seller == user %}
+    <p>Your item has sold to {{ winner }}</p>
+
+  {% elif winner == user %}
+    <p>You have won this auction!</p>
+
+  {% else %}
+    <p>This item has sold to {{ winner }}</p>  
+
+  {% endif %}
+
+  {% endif %}
+
+{% endif %}
+
+
 
 
 
@@ -146,10 +167,9 @@
 
     <div class="row">
 
-        {% if comments %}
-          {% for comment in comments %}
+    {% for comment in comments %}
 
-        <div class="container mt-5 mb-5">
+        <div class="container mt-2 mb-2">
             <div class="d-flex justify-content-center row">
                 <div class="col-md-10">
                     <div class="card text-left">
@@ -165,10 +185,7 @@
 
         </div>
 
-          {% endfor %}
-
-        {% endif %}
-
+    {% endfor %}
 
         
         
