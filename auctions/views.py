@@ -101,9 +101,11 @@ def listing(request, listing_id):
         try:
             winner = Bid.objects.filter(listing=listing).last().user
         except: winner = None
+        comments = Comments.objects.filter(listing=listing_id)
         return render(request, "auctions/listing.html", {
             "listing" : listing, 
-            "winner" : winner
+            "winner" : winner,
+            "comments" : comments
             })
 
 

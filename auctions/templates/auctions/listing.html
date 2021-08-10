@@ -48,8 +48,7 @@
                     <h4>£ {{ listing.price }}</h4>
 
 
-               
-
+{% if listing.active == True %}
             
                 
   <!--Error Messages-->
@@ -86,7 +85,20 @@
                     <input class="btn btn-danger" type="submit" value="Watch"/>
 
                 </form>
+{% endif %}
 
+<!--Watchlist Message section-->
+
+
+{% if listing in rquest.user.watchlist %}
+
+<div class="alert alert-info" role="alert">Remove from watchlist</div>
+
+{% else %}
+
+<div class="alert alert-info" role="alert">Add to watchlist</div>
+
+{% endif %}
 
 <!--Winning Bid section-->
 
@@ -95,22 +107,23 @@
 
  {% if winner is None %}
  {% if listing.seller  == user %}
-    <p>There were no Bids on your listing</p>
+    <div class="alert alert-info" role="alert">There were no Bids on your listing</div>
   {% else %}
-    <p>This Auction has ended </p>
+    <div class="alert alert-info" role="alert">This Auction has ended</div> 
   {% endif %}
 
   
 {% elif winner is not None %}
 
   {% if listing.seller == user %}
-    <p>Your item has sold to {{ winner }}</p>
+    <div class="alert alert-info" role="alert">Your item has sold to {{ winner }}</div> 
+    
 
   {% elif winner == user %}
-    <p>You have won this auction!</p>
+    <div class="alert alert-info" role="alert">You have won this auction!</div> 
 
   {% else %}
-    <p>This item has sold to {{ winner }}</p>  
+    <div class="alert alert-info" role="alert">This item has sold to {{ winner }}</div> 
 
   {% endif %}
 
@@ -199,7 +212,7 @@
 </section>
 
 
-
+{% if listing.active == True %}
   <!--add comments section-->
 
         <section class ="mb-5">
@@ -239,7 +252,7 @@
 
 
 
-
+{% endif %}
 
 
 
