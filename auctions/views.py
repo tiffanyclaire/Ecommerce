@@ -91,11 +91,16 @@ def listing(request, listing_id):
         form = bid_form()
         add_comment = comment_form()
         comments = Comments.objects.filter(listing=listing_id)
+        if Watchlist.objects.filter(user=request.user, listing=listing).exists():
+            watching = True
+        else:
+            watching = False
         return render(request, "auctions/listing.html", {
             "listing" : listing,
             "form" : form,
             "add_comment" : add_comment,
-            "comments" : comments
+            "comments" : comments,
+            "watching" : watching 
             })
     else:
         try:
@@ -167,10 +172,15 @@ def bid(request, listing_id):
     else:
         listing = Listing.objects.get(id=listing_id)
         form = bid_form()
+        if Watchlist.objects.filter(user=request.user, listing=listing).exists():
+            watching = True
+        else:
+            watching = False
         messages.error(request, "Your bid is too low", extra_tags='bid_error')
         return render(request, "auctions/listing.html", {
         "listing": listing, 
         "form" : form,
+        "watching" : watching
         
    })
 

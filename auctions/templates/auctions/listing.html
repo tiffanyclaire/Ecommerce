@@ -48,10 +48,45 @@
                     <h4>£ {{ listing.price }}</h4>
 
 
-{% if listing.active == True %}
+ <!--Winning Bid section-->
+
+    <div class="row mt-3">
+
+    {% if listing.active == False %}
+
+    {% if winner is None %}
+    {% if listing.seller  == user %}
+    <div class="alert alert-info" role="alert">There were no Bids on your listing</div>
+    {% else %}
+    <div class="alert alert-info" role="alert">This Auction has ended</div> 
+    {% endif %}
+
+    
+    {% elif winner is not None %}
+
+    {% if listing.seller == user %}
+    <div class="alert alert-info" role="alert">Your item has sold to {{ winner }}</div> 
+    
+
+    {% elif winner == user %}
+    <div class="alert alert-info" role="alert">You have won this auction!</div> 
+
+    {% else %}
+    <div class="alert alert-info" role="alert">This item has sold to {{ winner }}</div> 
+
+    {% endif %}
+
+    {% endif %}
+
+    {% endif %}
+
+    </div>
+
+ <!--Error Messages-->
+
+                {% if listing.active == True %}
             
-                
-  <!--Error Messages-->
+  
                 
 
                 {% if messages %}
@@ -66,7 +101,7 @@
 
 
 
-<!--bid and watch-->           
+                  <!--bid and watch-->           
             
                 <form method="POST" action="{% url 'bid' listing.id %}" class="form-inline">
                     {% csrf_token %}
@@ -79,64 +114,33 @@
                 </div> 
                 
                 </form>
+                <div class="row col-md-7 mt-3">
 
                 <form method="POST" action="{% url 'watchlist_add' listing.id %}" class="pull-right">
                     {% csrf_token %}
                     <input class="btn btn-danger" type="submit" value="Watch"/>
 
                 </form>
-{% endif %}
+                {% endif %}
 
-<!--Watchlist Message section-->
+            <!--Watchlist Message section-->
 
+            {% if listing.active == True %}
 
-{% if listing in rquest.user.watchlist %}
+            {% if watching == True %}
 
-<div class="alert alert-info" role="alert">Remove from watchlist</div>
+            <div class="alert alert-light" role="alert">Remove from watchlist</div>
 
-{% else %}
+            {% else %}
 
-<div class="alert alert-info" role="alert">Add to watchlist</div>
+            <div class="alert alert-light" role="alert">Add to watchlist</div>
 
-{% endif %}
+            {% endif %}
 
-<!--Winning Bid section-->
-
-
-{% if listing.active == False %}
-
- {% if winner is None %}
- {% if listing.seller  == user %}
-    <div class="alert alert-info" role="alert">There were no Bids on your listing</div>
-  {% else %}
-    <div class="alert alert-info" role="alert">This Auction has ended</div> 
-  {% endif %}
-
-  
-{% elif winner is not None %}
-
-  {% if listing.seller == user %}
-    <div class="alert alert-info" role="alert">Your item has sold to {{ winner }}</div> 
-    
-
-  {% elif winner == user %}
-    <div class="alert alert-info" role="alert">You have won this auction!</div> 
-
-  {% else %}
-    <div class="alert alert-info" role="alert">This item has sold to {{ winner }}</div> 
-
-  {% endif %}
-
-  {% endif %}
-
-{% endif %}
-
-
-
-
-
+            {% endif %} 
+                </div>
             </div>      
-        </div>
+        
     </section>
 
 
@@ -172,11 +176,11 @@
 
 
 
-<!--comments section-->
+ <!--comments section-->
 
 
 
-<section class ="mb-5">
+ <section class ="mb-5">
 
     <div class="row">
 
@@ -209,10 +213,10 @@
 
 
     
-</section>
+ </section>
 
 
-{% if listing.active == True %}
+ {% if listing.active == True %}
   <!--add comments section-->
 
         <section class ="mb-5">
@@ -252,11 +256,7 @@
 
 
 
-{% endif %}
-
-
-
-
+ {% endif %}
     
 </div>
         

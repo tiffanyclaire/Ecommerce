@@ -33,6 +33,7 @@
     <h2>{{ category }}</h2>
 
         {% for listing in listings %}
+        {% if listing.active == True %}
         <div class="container mt-5 mb-5">
 
             
@@ -59,6 +60,7 @@
         </div>  
 
         </div>
+        {% endif %}
 
         {% endfor %}
 
